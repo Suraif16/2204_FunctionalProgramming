@@ -9,8 +9,8 @@ object Q4a extends App{
   }
 
   //function for calculating total payment for OT working hours per week
-  def totalOT(h:Int):Int={
-    var total:Int = h * 85;
+  def totalOT(hOT:Int):Int={
+    var total:Int = hOT * 85;
     return total;
   }
 
