@@ -19,5 +19,5 @@ object Q4b extends App{
     return income(price)- cost(price)
   }
 
-  println(profit(5),profit(10),profit(15),profit(20),profit(25),profit(30),profit(35),profit(40))
+  printf("%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",profit(5),profit(10),profit(15),profit(20),profit(25),profit(30),profit(35),profit(40))
 }
