@@ -1,17 +1,17 @@
-package Tutorial4
+import scala.io.StdIn.readInt;
 
-object Q2{
-  // Checking  whether the integer is even or odd
-  def isEven(number: Int): Boolean = number match{
-    case x if(x == 0) => true
-    case x if(x > 0) => !isEven(number - 1)
-    case x if(x < 0) => !isEven(number + 1)
-  }
+object  Question {
+    def PositiveNegative(num:Int) : Unit = num match {
+        case x if x <= 0 && x % 2 == 0 => println("Negative/Zero + Even")
+        case x if x <= 0 && x % 2 != 0 => println("Negative/Zero + Odd")
+        case x if x > 0 && x % 2 == 0  => println("Positive + Even")
+        case x if x > 0 && x % 2 != 0  => println("Positive + Odd")
+    }
+    def main(args: Array[String]): Unit = {
 
-  def main(args: Array[String]): Unit = {
-    // Getting number as the input from the command line
-    val input = if(args.length > 0) args(0).toInt else 0
-
-    if(isEven(input)) println("Even number") else println("Odd number")
-  }
+        printf("Enter a number to check: ");
+        var num = readInt();
+        
+        PositiveNegative(num);
+    }
 }
