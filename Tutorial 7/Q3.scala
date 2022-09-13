@@ -1,49 +1,26 @@
-package scala_tutorial7
+object Q_3 {
+  case class Account(ac: Int, bal: Int){
+    var acNo: Int = ac
+    var balance: Int = bal
 
-object Q3 extends App {
-  var accountList: List[Account] = List()
-
-  def accCreate(nic: String, accId: Int): Unit = {
-    val acc = new Account(nic, accId)
-    accountList = accountList ::: acc :: Nil
-
-    println(accountList)
-  }
-
-  val find = (a: Int, b: List[Account]) => b.filter(account => account.accId.equals(a))
-
-  /* Driver Code */
-  accCreate("1", 1)
-  accCreate("2", 2)
-
-  //deposit money
-  find(1, accountList)(0).deposit(1000)
-  println(find(1, accountList)(0))
-
-  //transfer money
-  find(1, accountList)(0).transfer(2, 100.0)
-  println(find(2, accountList)(0))
-}
-
-class Account(nic: String, val accId: Int, var balance: Double = 0.0) {
-
-  def withdraw(amount: Double): Unit = {
-    this.balance = this.balance - amount
-  }
-
-  def deposit(amount: Double): Unit = {
-    this.balance = this.balance + amount
-  }
-
-  def transfer(account: Int, amount: Double): Unit = {
-    val transferAcc = Q3.find(account, Q3.accountList)
-    if (balance < 0.0) println("Insufficient balance")
-    else {
-      this.withdraw(amount)
-      transferAcc(0).deposit(amount)
+    def transferTo(ac: Account, bal: Int) = {
+      this.balance = this.balance - bal
+      ac.deposit(bal)
     }
+
+    def deposit(bal: Int) = {
+      this.balance = this.balance + bal
+    }
+
+    override def toString(): String = acNo + "\t" + balance
   }
 
-  override def toString = "[" + nic + ":" + accId + ":" + balance + "]"
+  def main(args: Array[String]) = {
+    var A = Account(121475, 16000)
+    var B = Account(671680, 26000)
 
+    A.transferTo(B, 5000)
+    println(A)
+    println(B)
+  }
 }
