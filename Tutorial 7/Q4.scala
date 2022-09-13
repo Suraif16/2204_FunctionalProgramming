@@ -1,43 +1,63 @@
-object Q4 extends App{
-  var bank:List[Accts] = List()
-  //append accounts to the bank list
-  bank = bank :+ new Accts("200022503270",100121,50000)
-  bank = bank :+ new Accts("1922235477v",100122,-1000)
-  bank = bank :+ new Accts("1936945211v",100123,100000)
-  bank = bank :+ new Accts("200046529811",100124,120000)
+package scala_tutorial7
 
-  println(bank)
+object Q4 extends App {
+  var bankaccountList:List[BankAccount] = List()
 
-  //List of Accounts with negative balances
-  val negativeBalance =  bank.filter((x:Accts) => x.balance < 0)
-  printf("\nList of Accounts with negative balances : " + negativeBalance)
+  def accCreate(nic:String, accId: Int):Unit = {
+    val acc = new BankAccount(nic, accId)
+    bankaccountList = bankaccountList ::: acc :: Nil
 
-  //Calculate the sum of all account balances
-  val totalBalance:Double = bank.filter((x:Accts) => x.balance != 0).map(bank => bank.balance).reduce((x,y)=>x+y)
-  printf("\n\nSum of all account balances : " + totalBalance)
-
-  //Calculate final balances of all accounts after apply the interest
-  val totalWithInterest =  bank.map((x:Accts) => if (x.balance>0) x.balance = x.balance * 1.5 else x.balance = x.balance * 1.1)
-  totalWithInterest
-  printf("\n\nFinal balances with interest : " + bank)
-
-}
-
-class Accts(id:String, ac:Int, b:Double){
-  val nic = id
-  val accNo = ac
-  var balance = b
-
-  //function for withdraw money
-  def withdraw(a:Double) = this.balance - a
-  //function for deposit money
-  def deposit(a:Double) = this.balance + a
-  //function for transfer the money between accounts
-  def transfer (a:Accts, b:Double) = {
-    this.balance = this.balance - b
-    a.balance = a.balance + b
+    println(bankaccountList)
   }
 
-  //display the object values
-  override def toString = "[ " + nic + " : " + accNo + " : " + balance + " ]"
+  val find = (a:Int, b:List[BankAccount]) => b.filter(account => account.accId.equals(a))
+  val overdraft = (b:List[BankAccount]) => b.filter(account => account.balance < 0.0)
+  val totalBalance = (b:List[BankAccount]) => b.foldLeft(0.0)((x, y) => x + y.balance)
+  val interest = (b:List[BankAccount]) => b.map(account => if(account.balance > 0) account.balance * 0.05 else account.balance * 0.1)
+
+
+  /* Driver Code */
+
+  //create accounts
+  accCreate("1",1)
+  accCreate("2",2)
+
+  //deposit money
+  find(1, bankaccountList)(0).deposit(1000)
+  println(find(1, bankaccountList)(0))
+
+  //transfer money
+  find(1, bankaccountList)(0).transfer(2, 100.0)
+  println(find(2, bankaccountList)(0))
+
+  //list of negative balances
+  println(overdraft(bankaccountList))
+
+  //sum of all account balances
+  println(totalBalance(bankaccountList))
+
+  //final balances of all accounts after apply the interest
+  println(interest(bankaccountList))
+}
+
+class BankAccount(nic:String, val accId: Int, var balance: Double = 0.0){
+
+  def withdraw(amount:Double) : Unit = {
+    this.balance = this.balance - amount
+  }
+
+  def deposit(amount:Double) : Unit = {
+    this.balance = this.balance + amount
+  }
+
+  def transfer(account:Int, amount:Double) : Unit = {
+    val transferAcc = Q4.find(account, Q4.bankaccountList)
+    if (balance < 0.0) println("Insufficient balance")
+    else {
+      this.withdraw(amount)
+      transferAcc(0).deposit(amount)
+    }
+  }
+
+  override def toString = "["+nic+":"+accId +":"+ balance+"]"
 }
