@@ -1,33 +1,49 @@
-object Q3 extends App{
-  var bank:List[Account] = List()
-  //append accounts to the bank list
-  bank = bank :+ new Account("200022503270",100121,50000)
-  bank = bank :+ new Account("1922235477v",100122,80500)
-  bank = bank :+ new Account("1936945211v",100123,100000)
-  bank = bank :+ new Account("200046529811",100124,120000)
+package scala_tutorial7
 
-  println(bank)
-  //transfer 10000 to 3rd acc to 1st acc
-  bank(2).transfer(bank(0),10000)
-  println("Money transfer between accounts ->")
-  println(bank)
+object Q3 extends App {
+  var accountList: List[Account] = List()
 
+  def accCreate(nic: String, accId: Int): Unit = {
+    val acc = new Account(nic, accId)
+    accountList = accountList ::: acc :: Nil
+
+    println(accountList)
+  }
+
+  val find = (a: Int, b: List[Account]) => b.filter(account => account.accId.equals(a))
+
+  /* Driver Code */
+  accCreate("1", 1)
+  accCreate("2", 2)
+
+  //deposit money
+  find(1, accountList)(0).deposit(1000)
+  println(find(1, accountList)(0))
+
+  //transfer money
+  find(1, accountList)(0).transfer(2, 100.0)
+  println(find(2, accountList)(0))
 }
 
-class Account(id:String, ac:Int, b:Double){
-  val nic = id
-  val accNo = ac
-  var balance = b
+class Account(nic: String, val accId: Int, var balance: Double = 0.0) {
 
-  //function for withdraw money
-  def withdraw(a:Double) = this.balance - a
-  //function for deposit money
-  def deposit(a:Double) = this.balance + a
-  //function for transfer the money between accounts
-  def transfer (a:Account, b:Double) = {
-    this.balance = this.balance - b
-    a.balance = a.balance + b
+  def withdraw(amount: Double): Unit = {
+    this.balance = this.balance - amount
   }
-  //display the object values
-  override def toString = "[ " + nic + " : " + accNo + " : " + balance + " ]"
+
+  def deposit(amount: Double): Unit = {
+    this.balance = this.balance + amount
+  }
+
+  def transfer(account: Int, amount: Double): Unit = {
+    val transferAcc = Q3.find(account, Q3.accountList)
+    if (balance < 0.0) println("Insufficient balance")
+    else {
+      this.withdraw(amount)
+      transferAcc(0).deposit(amount)
+    }
+  }
+
+  override def toString = "[" + nic + ":" + accId + ":" + balance + "]"
+
 }
