@@ -1,63 +1,35 @@
-package scala_tutorial7
+object Q_4 {
+  case class Account(ac: Int, bal: Double){
+    var acNo: Int = ac
+    var balance: Double = bal
 
-object Q4 extends App {
-  var bankaccountList:List[BankAccount] = List()
-
-  def accCreate(nic:String, accId: Int):Unit = {
-    val acc = new BankAccount(nic, accId)
-    bankaccountList = bankaccountList ::: acc :: Nil
-
-    println(bankaccountList)
-  }
-
-  val find = (a:Int, b:List[BankAccount]) => b.filter(account => account.accId.equals(a))
-  val overdraft = (b:List[BankAccount]) => b.filter(account => account.balance < 0.0)
-  val totalBalance = (b:List[BankAccount]) => b.foldLeft(0.0)((x, y) => x + y.balance)
-  val interest = (b:List[BankAccount]) => b.map(account => if(account.balance > 0) account.balance * 0.05 else account.balance * 0.1)
-
-
-  /* Driver Code */
-
-  //create accounts
-  accCreate("1",1)
-  accCreate("2",2)
-
-  //deposit money
-  find(1, bankaccountList)(0).deposit(1000)
-  println(find(1, bankaccountList)(0))
-
-  //transfer money
-  find(1, bankaccountList)(0).transfer(2, 100.0)
-  println(find(2, bankaccountList)(0))
-
-  //list of negative balances
-  println(overdraft(bankaccountList))
-
-  //sum of all account balances
-  println(totalBalance(bankaccountList))
-
-  //final balances of all accounts after apply the interest
-  println(interest(bankaccountList))
-}
-
-class BankAccount(nic:String, val accId: Int, var balance: Double = 0.0){
-
-  def withdraw(amount:Double) : Unit = {
-    this.balance = this.balance - amount
-  }
-
-  def deposit(amount:Double) : Unit = {
-    this.balance = this.balance + amount
-  }
-
-  def transfer(account:Int, amount:Double) : Unit = {
-    val transferAcc = Q4.find(account, Q4.bankaccountList)
-    if (balance < 0.0) println("Insufficient balance")
-    else {
-      this.withdraw(amount)
-      transferAcc(0).deposit(amount)
+    def checkNeg() = {
+      if(balance < 0) println(acNo + "\t" + balance)
     }
+
+    def setBalance(x: Double) = balance = x
+
+    override def toString(): String = acNo + "\t" + balance
   }
 
-  override def toString = "["+nic+":"+accId +":"+ balance+"]"
+  def main(args: Array[String]) = {
+    var A = Account(121345, -15000)
+    var B = Account(675890, 25000)
+    var C = Account(246980, -30000)
+    var D = Account(135779, 10000)
+
+    var acList: Array[Account] = Array(A, B, C, D)
+    var acBalList: Array[Double] = Array(A.balance, B.balance, C.balance, D.balance)
+
+    var overdraft: Array[Account] = acList.filter(i => i.balance < 0)
+    println("The accounts with negative balance:")
+    overdraft.foreach(i => println(i))
+
+    var acSum: Double = acBalList.reduce((x, y) => x + y)
+    println("\nTotal Sum of Accounts = " + acSum)
+
+    println("\nThe final balances of all accounts after apply the interest function:")
+    acList.map(i => if(i.balance > 0) i.setBalance(i.balance * 1.05) else i.setBalance(i.balance * 1.1))
+    acList.foreach(i => println(i))
+  }
 }
